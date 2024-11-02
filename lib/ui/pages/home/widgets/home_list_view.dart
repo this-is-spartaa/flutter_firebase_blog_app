@@ -27,7 +27,7 @@ class HomeListView extends StatelessWidget {
         onTap: () {
           Navigator.push(context, MaterialPageRoute(
             builder: (context) {
-              return DetailPage();
+              return DetailPage(post);
             },
           ));
         },

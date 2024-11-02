@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_blog_app/data/model/post.dart';
 import 'package:flutter_firebase_blog_app/ui/pages/write/write_page.dart';
 
 class DetailPage extends StatelessWidget {
+  DetailPage(this.post);
+  Post post;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +39,7 @@ class DetailPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Today I Learned',
+                  post.title,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
@@ -43,13 +47,13 @@ class DetailPage extends StatelessWidget {
                 ),
                 SizedBox(height: 14),
                 Text(
-                  '이지원',
+                  post.writer,
                   style: TextStyle(
                     fontSize: 16,
                   ),
                 ),
                 Text(
-                  '2024.09.09 20:20',
+                  '${post.createdAt.year}.${post.createdAt.month}.${post.createdAt.day} ${post.createdAt.hour}:${post.createdAt.minute}',
                   style: TextStyle(
                     fontWeight: FontWeight.w200,
                     fontSize: 14,
@@ -57,7 +61,7 @@ class DetailPage extends StatelessWidget {
                 ),
                 SizedBox(height: 14),
                 Text(
-                  'Flutter GridView를 배웠습니다.Flutter GridView를 배웠습니다.Flutter GridView를 배웠습니다.Flutter GridView를 배웠습니다.Flutter GridView를 배웠습니다.',
+                  post.content,
                   style: TextStyle(
                     fontSize: 16,
                   ),
