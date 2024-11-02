@@ -1,29 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_blog_app/data/model/post.dart';
 import 'package:flutter_firebase_blog_app/ui/pages/detail/detail_page.dart';
+import 'package:flutter_firebase_blog_app/ui/pages/home/home_view_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomeListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      // 8. ListView.separated 생성자로 변경
-      //    ListView.builder와 사용방법은 동일하나
-      //    각 아이템 사이에 뭔가를 넣고 싶을 때 사용
-      //    separatorBuilder 필수 구현해야되며 separatorBuilder 내에서
-      //    각 위젯 사이에 들어갈 위젯들 리면해주면 됨!
-      child: ListView.separated(
-        itemCount: 50,
-        separatorBuilder: (context, index) => SizedBox(height: 10),
-        itemBuilder: (context, index) {
-          return item();
-        },
-      ),
+      child: Consumer(builder: (context, ref, child) {
+        final state = ref.watch(homeViewModel);
+        return ListView.separated(
+          itemCount: state.length,
+          separatorBuilder: (context, index) => SizedBox(height: 10),
+          itemBuilder: (context, index) {
+            return item(state[index]);
+          },
+        );
+      }),
     );
   }
 
-  // 0. 위젯 함수화
-  Widget item() {
-    // GestureDetactor 내에서 화면 전환을 위해서 context가 필요한데
-    // Builder 위젯을 사용하면 BuildContext를 item함수의 파라미터로 받지 않을 수 있음
+  Widget item(Post post) {
     return Builder(builder: (context) {
       return GestureDetector(
         onTap: () {
@@ -33,19 +31,11 @@ class HomeListView extends StatelessWidget {
             },
           ));
         },
-        // 7. Container는 여러 속성이 많아서 Container에서 제공하는 속성을
-        // 사용하지 않을거라면 SizedBox 사용하는게 성능에 좋음!
         child: SizedBox(
           height: 120,
           width: double.infinity,
-          // 1. Stack 배치
           child: Stack(
             children: [
-              // 3. 오른쪽 영역
-              // AspectRatio 는 부모위젯 크기를 물려받는 위젯
-              // Positioned 는 크기가 자녀위젯 크기 따라감
-              // 자녀위젯의 크기가 없다면 width, height 속성으로 크기를 정해줘야함!!!
-              // 이미지 위에 컨테이너가 와야되니 Stack에서 컨테이너보다 앞에 위치해야함
               Positioned(
                 right: 0,
                 width: 120,
@@ -61,7 +51,6 @@ class HomeListView extends StatelessWidget {
                   ),
                 ),
               ),
-              // 2. 왼쪽영역 구현
               Container(
                 width: double.infinity,
                 height: double.infinity,
@@ -78,7 +67,7 @@ class HomeListView extends StatelessWidget {
                   children: [
                     // 4. Container 자녀요소 배치
                     Text(
-                      'Today I Learned',
+                      post.title,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
@@ -86,7 +75,7 @@ class HomeListView extends StatelessWidget {
                     ),
                     Spacer(),
                     Text(
-                      'Flutter의 그리드뷰를 배웠습니다.Flutter의 그리드뷰를 배웠습니다.Flutter의 그리드뷰를 배웠습니다.Flutter의 그리드뷰를 배웠습니다.Flutter의 그리드뷰를 배웠습니다.',
+                      post.content,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
@@ -97,7 +86,7 @@ class HomeListView extends StatelessWidget {
                     ),
                     SizedBox(height: 4),
                     Text(
-                      '2024.9.9 20:80',
+                      '${post.createdAt.year}.${post.createdAt.month}.${post.createdAt.day} ${post.createdAt.hour}:${post.createdAt.minute}',
                       style: TextStyle(
                         fontWeight: FontWeight.w200,
                         color: Colors.grey,

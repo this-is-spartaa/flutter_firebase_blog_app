@@ -24,4 +24,4 @@ class HomeViewModel extends Notifier<List<Post>> {
 
 // 2. ViewModel 관리자 구현
 final homeViewModel =
-    NotifierProvider<HomeViewModel, List<Post>?>(() => HomeViewModel());
+    NotifierProvider<HomeViewModel, List<Post>>(() => HomeViewModel());
