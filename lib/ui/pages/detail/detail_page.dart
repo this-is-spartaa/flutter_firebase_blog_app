@@ -13,6 +13,16 @@ class DetailPage extends StatelessWidget {
     // Consumer로 감싸주기!
 
     return Consumer(builder: (context, ref, child) {
+      // 상태 변화를 감지하기 위해!
+      final state = ref.watch(detailViewModel(post));
+      // 삭제된 포스트면 로딩창 나오게!!
+      if (state == null) {
+        return Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
       return Scaffold(
         appBar: AppBar(
           actions: [
@@ -48,7 +58,7 @@ class DetailPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    post.title,
+                    state.title,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
@@ -56,13 +66,13 @@ class DetailPage extends StatelessWidget {
                   ),
                   SizedBox(height: 14),
                   Text(
-                    post.writer,
+                    state.writer,
                     style: TextStyle(
                       fontSize: 16,
                     ),
                   ),
                   Text(
-                    '${post.createdAt.year}.${post.createdAt.month}.${post.createdAt.day} ${post.createdAt.hour}:${post.createdAt.minute}',
+                    '${state.createdAt.year}.${state.createdAt.month}.${state.createdAt.day} ${state.createdAt.hour}:${state.createdAt.minute}',
                     style: TextStyle(
                       fontWeight: FontWeight.w200,
                       fontSize: 14,
@@ -70,7 +80,7 @@ class DetailPage extends StatelessWidget {
                   ),
                   SizedBox(height: 14),
                   Text(
-                    post.content,
+                    state.content,
                     style: TextStyle(
                       fontSize: 16,
                     ),

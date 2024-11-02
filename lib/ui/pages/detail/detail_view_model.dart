@@ -9,10 +9,25 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class DetailViewModel extends AutoDisposeFamilyNotifier<Post?, Post> {
   @override
   Post? build(Post? arg) {
+    listenStream();
     return arg;
   }
 
   final postRepository = const PostRepository();
+
+  void listenStream() async {
+    final streamSubscription = postRepository.postStream(arg.id).listen(
+      (post) {
+        state = post;
+      },
+    );
+    ref.onDispose(
+      () {
+        print("DISPOSE 됨");
+        streamSubscription.cancel();
+      },
+    );
+  }
 
   Future<bool> delete() async {
     return await postRepository.delete(arg.id);
