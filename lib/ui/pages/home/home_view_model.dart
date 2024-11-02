@@ -18,7 +18,22 @@ class HomeViewModel extends Notifier<List<Post>> {
   final postRepository = const PostRepository();
 
   Future<void> fetchData() async {
-    state = await postRepository.getAll();
+    // state = await postRepository.getAll();
+    // 1. 스트림을 받아옵니다
+    final stream = postRepository.postListStream();
+    // 2. 스트림의 변경사항을 구독하고 상태를 업데이트 해줍니다!
+    final streamSubscription = stream.listen(
+      (newList) {
+        state = newList;
+      },
+    );
+
+    // 2. 이 뷰모델이 없어질 때 구독을 끝내주어야 메모리에서 안전하게 제거가 돼요!
+    ref.onDispose(
+      () {
+        streamSubscription.cancel();
+      },
+    );
   }
 }
 

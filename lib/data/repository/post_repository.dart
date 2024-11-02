@@ -100,4 +100,37 @@ class PostRepository {
       return false;
     }
   }
+
+  Stream<List<Post>> postListStream() {
+    // 1. 컬렉션 참조를 만들어줍니다!
+    final collectionRef = FirebaseFirestore.instance
+        .collection('posts')
+        // 여기서 리스트 가지고 올 때 정렬 방식도 정할수 있어요!
+        // .count 나 .where과 같은 조건으로 가지고 올 수도 있어요!
+        .orderBy('createdAt', descending: true);
+    // 2. 참조의 스냅샷 메서드는 변경이 일어날 때마다 스트림에 값을 하나씩 넣어주는 역할을 해요!
+    final snapshotStream = collectionRef.snapshots();
+    // 3. 스트림을 가공해서 다른 List<Post> 타입의 스트림으로 만들게요!
+    return snapshotStream.map(
+      (event) {
+        return event.docs.map(
+          (doc) {
+            return Post.fromJson({'id': doc.id, ...doc.data()});
+          },
+        ).toList();
+      },
+    );
+  }
+
+  Stream<Post?> postStream(String id) {
+    final snapshot = FirebaseFirestore.instance.collection('posts').doc(id);
+    return snapshot.snapshots().map(
+      (e) {
+        if (e.data() == null) {
+          return null;
+        }
+        return Post.fromJson({'id': e.id, ...e.data()!});
+      },
+    );
+  }
 }
