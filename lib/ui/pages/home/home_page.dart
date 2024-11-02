@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_blog_app/ui/pages/home/widgets/home_list_view.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -25,23 +26,12 @@ class HomePage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
+            SizedBox(height: 10),
             // 3. 리스트뷰 배치
             // ListView는 부모위젯의 크기가 있어야 하므로
             // Column 내에서 사용 시 Expanded 배치!
             // (Column은 디폴트로 크기가 정해지지 않은 위젯!)
-            Expanded(
-                child: ListView(
-              children: [
-                // 4. ListView 내 위젯 배치
-                // ListView 내 위젯은 반드시 높이를 가져야함!
-                // 가로 스크롤 시에는 너비를 가져야함!
-                Container(
-                  height: 120,
-                  width: double.infinity,
-                  color: Colors.blue,
-                ),
-              ],
-            )),
+            HomeListView(),
           ],
         ),
       ),
