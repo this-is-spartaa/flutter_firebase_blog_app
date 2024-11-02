@@ -19,7 +19,54 @@ class DetailPage extends StatelessWidget {
           }),
         ],
       ),
-      body: Text('DetailPage'),
+      body: ListView(
+        padding: EdgeInsets.only(bottom: 300),
+        children: [
+          Image.network(
+            'https://picsum.photos/200/300',
+            fit: BoxFit.cover,
+          ),
+          SizedBox(height: 20),
+          // 이미지에는 패딩이 적용되지 않기 때문에 아래 영역만 Padding 위젯
+          // 감싸서 패딩 지정!
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Today I Learned',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                SizedBox(height: 14),
+                Text(
+                  '이지원',
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+                Text(
+                  '2024.09.09 20:20',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w200,
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(height: 14),
+                Text(
+                  'Flutter GridView를 배웠습니다.Flutter GridView를 배웠습니다.Flutter GridView를 배웠습니다.Flutter GridView를 배웠습니다.Flutter GridView를 배웠습니다.',
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
