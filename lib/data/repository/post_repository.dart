@@ -47,4 +47,42 @@ class PostRepository {
     // 저장!
     await docRef.set(map);
   }
+
+  Future<Post?> getOne(String id) async {
+    // data가 null 일경우 catch문 타게.
+    // 네트워크 오류일때도 catch문!
+    try {
+      final snapshot =
+          await FirebaseFirestore.instance.collection('post').doc(id).get();
+      return Post.fromJson({
+        'id': snapshot.id,
+        ...snapshot.data()!,
+      });
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  Future<bool> delete(String id) async {
+    try {
+      final docRef = FirebaseFirestore.instance.collection('post').doc(id);
+      await docRef.delete();
+      return true;
+    } catch (e) {
+      print('$e');
+      return false;
+    }
+  }
+
+  Future<bool> update(String id) async {
+    try {
+      final docRef = FirebaseFirestore.instance.collection('post').doc(id);
+      await docRef.delete();
+      return true;
+    } catch (e) {
+      print('$e');
+      return false;
+    }
+  }
 }
