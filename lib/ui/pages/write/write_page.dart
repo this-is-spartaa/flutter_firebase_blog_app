@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_firebase_blog_app/data/model/post.dart';
 import 'package:flutter_firebase_blog_app/ui/pages/write/write_view_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 
 class WritePage extends ConsumerStatefulWidget {
   const WritePage({super.key, required this.post});
@@ -52,7 +53,6 @@ class _WritePageState extends ConsumerState<WritePage> {
                   writer: writerController.text,
                   title: titleController.text,
                   content: contentController.text,
-                  imgUrl: 'https://picsum.photos/200/300',
                 );
                 if (result && mounted) {
                   Navigator.pop(context);
@@ -124,11 +124,25 @@ class _WritePageState extends ConsumerState<WritePage> {
                 // 7. 사진 업로드 할 위젯
                 Align(
                   alignment: Alignment.centerRight,
-                  child: Container(
-                    width: 100,
-                    height: 100,
-                    color: Colors.grey,
-                    child: Icon(Icons.image),
+                  child: GestureDetector(
+                    onTap: () async {
+                      final xFile = await ImagePicker()
+                          .pickImage(source: ImageSource.gallery);
+                      if (xFile != null) {
+                        vm.uploadImage(xFile);
+                      }
+                    },
+                    child: state.imageUrl == null
+                        ? Container(
+                            width: 100,
+                            height: 100,
+                            color: Colors.grey,
+                            child: Icon(Icons.image),
+                          )
+                        : SizedBox(
+                            height: 100,
+                            child: Image.network(state.imageUrl!),
+                          ),
                   ),
                 ),
               ],
