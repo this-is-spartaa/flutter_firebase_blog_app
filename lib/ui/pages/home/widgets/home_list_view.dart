@@ -45,7 +45,7 @@ class HomeListView extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
                     child: Image.network(
-                      'https://picsum.photos/200/300',
+                      post.imgUrl,
                       fit: BoxFit.cover,
                     ),
                   ),

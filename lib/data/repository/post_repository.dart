@@ -30,6 +30,7 @@ class PostRepository {
     required String title,
     required String content,
     required String writer,
+    required String imgUrl,
   }) async {
     try {
       FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -44,6 +45,7 @@ class PostRepository {
         'content': content,
         'writer': writer,
         'createdAt': DateTime.now().toIso8601String(),
+        'imgUrl': imgUrl,
       };
       // 저장!
       await docRef.set(map);
@@ -86,6 +88,7 @@ class PostRepository {
     required String writer,
     required String title,
     required String content,
+    required String imgUrl,
   }) async {
     try {
       final docRef = FirebaseFirestore.instance.collection('posts').doc(id);
@@ -93,6 +96,7 @@ class PostRepository {
         'writer': writer,
         'title': title,
         'content': content,
+        'imgUrl': imgUrl,
       });
       return true;
     } catch (e) {

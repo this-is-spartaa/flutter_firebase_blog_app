@@ -52,6 +52,7 @@ class _WritePageState extends ConsumerState<WritePage> {
                   writer: writerController.text,
                   title: titleController.text,
                   content: contentController.text,
+                  imgUrl: 'https://picsum.photos/200/300',
                 );
                 if (result && mounted) {
                   Navigator.pop(context);

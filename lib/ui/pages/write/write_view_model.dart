@@ -26,6 +26,7 @@ class WriteViewModel extends AutoDisposeFamilyNotifier<WritePageState, Post?> {
     required String writer,
     required String title,
     required String content,
+    required String imgUrl,
   }) async {
     if (arg?.content == content &&
         arg?.title == title &&
@@ -38,12 +39,14 @@ class WriteViewModel extends AutoDisposeFamilyNotifier<WritePageState, Post?> {
             writer: writer,
             title: title,
             content: content,
+            imgUrl: imgUrl,
           )
         : await postRepository.update(
             id: arg!.id,
             writer: writer,
             title: title,
             content: content,
+            imgUrl: imgUrl,
           );
 
     await Future.delayed(Duration(seconds: 1));

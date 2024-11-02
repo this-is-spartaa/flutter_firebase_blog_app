@@ -46,7 +46,7 @@ class DetailPage extends StatelessWidget {
           padding: EdgeInsets.only(bottom: 300),
           children: [
             Image.network(
-              'https://picsum.photos/200/300',
+              state.imgUrl,
               fit: BoxFit.cover,
             ),
             SizedBox(height: 20),

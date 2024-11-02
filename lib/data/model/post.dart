@@ -5,6 +5,7 @@ class Post {
     required this.title,
     required this.content,
     required this.createdAt,
+    required this.imgUrl,
   });
 
   final String id;
@@ -12,6 +13,7 @@ class Post {
   final String title;
   final String content;
   final DateTime createdAt;
+  final String imgUrl;
 
   Post.fromJson(Map<String, dynamic> json)
       : this(
@@ -20,6 +22,7 @@ class Post {
           title: json['title'],
           content: json['content'],
           createdAt: DateTime.parse(json['createdAt']),
+          imgUrl: json['imgUrl'],
         );
 
   Map<String, dynamic> toJson() => {
@@ -28,5 +31,6 @@ class Post {
         'title': title,
         'content': content,
         'createdAt': createdAt.toIso8601String(),
+        imgUrl: imgUrl,
       };
 }
