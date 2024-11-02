@@ -40,7 +40,7 @@ class HomePage extends StatelessWidget {
         onPressed: () {
           Navigator.push(context, MaterialPageRoute(
             builder: (context) {
-              return WritePage();
+              return WritePage(post: null);
             },
           ));
         },

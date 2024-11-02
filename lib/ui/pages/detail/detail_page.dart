@@ -17,7 +17,7 @@ class DetailPage extends StatelessWidget {
           button(Icons.edit, () {
             Navigator.push(context, MaterialPageRoute(
               builder: (context) {
-                return WritePage();
+                return WritePage(post: post);
               },
             ));
           }),

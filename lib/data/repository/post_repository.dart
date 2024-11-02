@@ -26,26 +26,32 @@ class PostRepository {
   }
 
   // 1. insert 구현하기
-  Future<void> insert({
+  Future<bool> insert({
     required String title,
     required String content,
     required String writer,
   }) async {
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-    // 컬렉션 레퍼런스 타입의 이름이 기억이 안나요! 혹은 매번 타입 치기 번거로워요! 할땐 final or var!!!
-    final collectionRef = firestore.collection('posts');
-    // 새로운 문서를 생성할거니 id 비우고 문서참조 생성!
-    final docRef = collectionRef.doc();
+    try {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      // 컬렉션 레퍼런스 타입의 이름이 기억이 안나요! 혹은 매번 타입 치기 번거로워요! 할땐 final or var!!!
+      final collectionRef = firestore.collection('posts');
+      // 새로운 문서를 생성할거니 id 비우고 문서참조 생성!
+      final docRef = collectionRef.doc();
 
-    // 생성할 데이터 만들기!
-    final map = {
-      'title': title,
-      'content': content,
-      'writer': writer,
-      'createdAt': DateTime.now().toIso8601String(),
-    };
-    // 저장!
-    await docRef.set(map);
+      // 생성할 데이터 만들기!
+      final map = {
+        'title': title,
+        'content': content,
+        'writer': writer,
+        'createdAt': DateTime.now().toIso8601String(),
+      };
+      // 저장!
+      await docRef.set(map);
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
   }
 
   Future<Post?> getOne(String id) async {
@@ -53,7 +59,7 @@ class PostRepository {
     // 네트워크 오류일때도 catch문!
     try {
       final snapshot =
-          await FirebaseFirestore.instance.collection('post').doc(id).get();
+          await FirebaseFirestore.instance.collection('posts').doc(id).get();
       return Post.fromJson({
         'id': snapshot.id,
         ...snapshot.data()!,
@@ -66,7 +72,7 @@ class PostRepository {
 
   Future<bool> delete(String id) async {
     try {
-      final docRef = FirebaseFirestore.instance.collection('post').doc(id);
+      final docRef = FirebaseFirestore.instance.collection('posts').doc(id);
       await docRef.delete();
       return true;
     } catch (e) {
@@ -75,10 +81,19 @@ class PostRepository {
     }
   }
 
-  Future<bool> update(String id) async {
+  Future<bool> update({
+    required String id,
+    required String writer,
+    required String title,
+    required String content,
+  }) async {
     try {
-      final docRef = FirebaseFirestore.instance.collection('post').doc(id);
-      await docRef.delete();
+      final docRef = FirebaseFirestore.instance.collection('posts').doc(id);
+      await docRef.update({
+        'writer': writer,
+        'title': title,
+        'content': content,
+      });
       return true;
     } catch (e) {
       print('$e');

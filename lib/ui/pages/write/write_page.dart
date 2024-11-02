@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_firebase_blog_app/data/model/post.dart';
+import 'package:flutter_firebase_blog_app/ui/pages/write/write_view_model.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class WritePage extends StatefulWidget {
-  const WritePage({super.key});
+class WritePage extends ConsumerStatefulWidget {
+  const WritePage({super.key, required this.post});
+
+  final Post? post;
 
   @override
-  State<StatefulWidget> createState() => _WritePageState();
+  ConsumerState<WritePage> createState() => _WritePageState();
 }
 
-class _WritePageState extends State<WritePage> {
-  // 1. 작성자, 제목, 내용 TextFormField에 사용할 TextEditingController 만들어주기
-  late final writerController = TextEditingController();
-  late final titleController = TextEditingController();
-  late final contentController = TextEditingController();
+class _WritePageState extends ConsumerState<WritePage> {
+  // 1. 수정일떈 TextEditingController에 값 할당
+  late final writerController =
+      TextEditingController(text: widget.post?.writer);
+  late final titleController = TextEditingController(text: widget.post?.title);
+  late final contentController =
+      TextEditingController(text: widget.post?.content);
 
-  // 2. Form 위젯에 넘겨줄 GlobalKey 만들기
   final formKey = GlobalKey<FormState>();
 
-  // 3. 이 위젯이 사라질 때 호출되는 함수
-  //    TextEditingController 사용 끝났다고 알려주기
   @override
   void dispose() {
     writerController.dispose();
@@ -28,26 +32,30 @@ class _WritePageState extends State<WritePage> {
 
   @override
   Widget build(BuildContext context) {
-    // 8. TextField, TextFormField 를 사용할 때 반드시
-    //    Scaffold를 GestureDetector 로 감싸서 빈공간 터치했을때
-    //    키보드 사라지게 만들어주기!
+    final state = ref.watch(writeViewModel(widget.post));
+    final vm = ref.read(writeViewModel(widget.post).notifier);
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
         appBar: AppBar(
-          // 9. 나중에 조건에 따라 글쓰기, 글수정으로 바꾸지만 현재는 글쓰기로 고정
           title: Text('글쓰기'),
           actions: [
-            // 10. Text 배치하고 터치했을 때 validate 호출!
             GestureDetector(
               onTap: () async {
-                // formKey 가 사용되고 있는 Form 위젯(StatefulWidget)의 FormState를 찾아서
-                // FormState 내에 구현되어 있는 validate 메서드 호출.
-                // FormState 내부에서 자녀위젯들중에 TextFormField 위젯들을 찾아서
-                // TextFormField의 validator 메서드 호출하고 화면 업데이트 해줌!
-                formKey.currentState!.validate();
+                // 수정!
+                if (!formKey.currentState!.validate()) {
+                  return;
+                }
+                final result = await vm.insert(
+                  writer: writerController.text,
+                  title: titleController.text,
+                  content: contentController.text,
+                );
+                if (result && mounted) {
+                  Navigator.pop(context);
+                }
               },
               child: Container(
                 width: 50,
@@ -72,7 +80,6 @@ class _WritePageState extends State<WritePage> {
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: ListView(
               children: [
-                // 5. 작성자 TextFormField 만들기
                 TextFormField(
                   controller: writerController,
                   textInputAction: TextInputAction.done,
@@ -84,7 +91,6 @@ class _WritePageState extends State<WritePage> {
                     return null;
                   },
                 ),
-                // 5. 제목 TextFormField 만들기
                 TextFormField(
                   controller: titleController,
                   textInputAction: TextInputAction.done,
@@ -96,10 +102,6 @@ class _WritePageState extends State<WritePage> {
                     return null;
                   },
                 ),
-                // 6. 제목 TextFormField 만들기
-                //    TextField, TextFormField를 여러줄 입력 받으려면
-                //    maxLines 속성을 null로 주면됨
-                //    expands는 TextFormField의 크기를 부모위젯의 크기로 하고 싶을 때!
                 SizedBox(
                   height: 200,
                   child: TextFormField(
